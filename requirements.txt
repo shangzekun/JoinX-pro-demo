@@ -1,1 +1,4 @@
-# Minimal dependencies for the JoinX Pro demo
+fastapi>=0.110
+uvicorn>=0.23
+jinja2>=3.1
+python-multipart>=0.0.6

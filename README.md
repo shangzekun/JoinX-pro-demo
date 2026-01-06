@@ -15,8 +15,8 @@ and provide a minimal runnable skeleton that can be extended with real models an
   intermediate results are logged for traceability.
 - **Data & State** – In-memory task store holding task metadata and workflow logs. Can
   be swapped for JSON/DB storage later.
-- **Workbench (CLI)** – Minimal CLI to create a task, execute the SPR workflow, and
-  display agent outputs.
+- **Workbench (CLI) & Web UI** – Minimal CLI plus FastAPI web page to create a task,
+  execute the SPR workflow, and display agent outputs.
 
 ```
 joinx_pro/
@@ -34,6 +34,9 @@ joinx_pro/
 │  ├─ data/
 │  │  └─ store.py                     # In-memory storage abstraction
 │  ├─ api/
+│  │  ├─ server.py                    # FastAPI app serving a simple web UI
+│  │  └─ templates/
+│  │     └─ index.html                # Single-page workflow viewer
 │  └─ main.py                         # CLI entrypoint / workbench
 ├─ README.md
 └─ requirements.txt
@@ -70,12 +73,14 @@ joinx_pro/
 
 ### Workbench (CLI)
 `joinx_pro/app/main.py` exposes a CLI to run the demo workflow with sample inputs and view
-agent outputs. This can later be replaced by a web UI while keeping the workflow/agent
-layers intact.
+agent outputs. `joinx_pro/app/api/server.py` serves a minimal web UI to trigger workflow
+runs and visualize agent outputs in the browser.
 
 ## Running the Demo
 
 > Requires Python 3.10+; no external dependencies are needed for the CLI demo.
+
+### CLI (unchanged)
 
 ```bash
 python -m joinx_pro.app.main --demo
@@ -84,6 +89,18 @@ python -m joinx_pro.app.main --demo
 Optional flags:
 - `--manual-confirmation` / `--no-manual-confirmation`: simulate whether manual steps are
   auto-approved when high risk is detected.
+
+### Web UI
+
+```bash
+pip install -r requirements.txt
+uvicorn joinx_pro.app.api.server:app --reload --port 8000
+```
+
+Open http://localhost:8000 to:
+- submit material/structure/target inputs
+- toggle auto/manual confirmation for HIGH-risk branches
+- inspect per-step agent outputs and workflow logs
 
 ## Extending the Demo
 

@@ -2,34 +2,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import uuid
-from typing import Any, Dict
 
-from .data.store import InMemoryStore
 from .models.task import Task
-from .workflow.spr_workflow import run_default_workflow
-
-
-def create_task(material: Dict[str, Any], structure: Dict[str, Any], target: str) -> Task:
-    return Task(
-        id=str(uuid.uuid4()),
-        material=material,
-        structure=structure,
-        target=target,
-    )
-
-
-def run_demo(manual_confirmation: bool = True) -> Task:
-    material = {"material_pair": "Al/Steel", "sheet_thickness_mm": 1.5}
-    structure = {"joint_type": "SPR", "stack_layers": 2}
-    target = "strength"
-
-    task = create_task(material, structure, target)
-    store = InMemoryStore()
-    store.save_task(task)
-
-    run_default_workflow(task, manual_confirmation=manual_confirmation)
-    return task
+from .services.workbench import run_demo
 
 
 def print_task_summary(task: Task) -> None:
